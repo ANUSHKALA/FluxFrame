@@ -48,23 +48,35 @@ const RenderScreen = () => {
   
     
     return (
-      <div className="bg-gray-900 w-full h-full flex justify-center items-center">
-        <div
-          className={
-            "p-3 cursor-pointer hover:bg-slate-800 text-white fixed top-10 left-10" +
-            (inspectMode ? " bg-slate-800 border-2 border-blue-500" : " bg-slate-500")
-          }
-          onClick={changeInspect}
-        >
-          Inspect code
-        </div>
-        <div
-          onClick={handleInspect}
-          
-          className="cursor-pointer"
-        >
-          <Component />
-        </div>
+      <div className="bg-gray-900 w-full h-full flex flex-col">
+          <div className="z-10 mx-2 my-2">
+              <button
+                  className={"p-3 cursor-pointer hover:bg-slate-800 text-white" +
+                  (inspectMode
+                      ?" bg-slate-800 border-2 border-blue-500"
+                      : " bg-slate-500"
+                  )}
+                  onClick={changeInspect}
+              >
+                  Inspect Code
+              </button>
+          </div>
+          <div className="container mx-auto flex items-center h-full cursor-pointer" onClick={handleInspect}>
+              <Component />
+          </div>
+        {/*<div*/}
+
+        {/*  onClick={changeInspect}*/}
+        {/*>*/}
+        {/*  Inspect code*/}
+        {/*</div>*/}
+        {/*<div*/}
+        {/*  onClick={handleInspect}*/}
+
+        {/*  className="cursor-pointer"*/}
+        {/*>*/}
+        {/*  <Component />*/}
+        {/*</div>*/}
       </div>
     );
 }
