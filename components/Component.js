@@ -1,6 +1,11 @@
 import React from "react";
 
-function Component() {
+const dummyCode = `
+
+import React from "react";
+
+
+const Component = () => {
   const [num1, setNum1] = React.useState(0);
   const [num2, setNum2] = React.useState(0);
   const [sum, setSum] = React.useState(0);
@@ -47,3 +52,7 @@ function Component() {
 }
 
 export default Component;
+
+`;
+
+export default dummyCode;

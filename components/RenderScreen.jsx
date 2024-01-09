@@ -1,5 +1,7 @@
 import React from "react";
-import Component from './Component'
+// import Component from './Component'
+import dummyCode from "./Component";
+import DynamicComponent from "./DynamicComponent";
 
 const RenderScreen = () => {
     const [inspectMode, setInspectMode] = React.useState(false);
@@ -45,7 +47,7 @@ const RenderScreen = () => {
       }
       setSelectedComponent(null);
     };
-  
+  // console.log(dummyCode)
     
     return (
       <div className="bg-gray-900 w-full h-full flex flex-col">
@@ -62,21 +64,8 @@ const RenderScreen = () => {
               </button>
           </div>
           <div className="container mx-auto flex items-center h-full cursor-pointer" onClick={handleInspect}>
-              <Component />
+              <DynamicComponent code={dummyCode} />
           </div>
-        {/*<div*/}
-
-        {/*  onClick={changeInspect}*/}
-        {/*>*/}
-        {/*  Inspect code*/}
-        {/*</div>*/}
-        {/*<div*/}
-        {/*  onClick={handleInspect}*/}
-
-        {/*  className="cursor-pointer"*/}
-        {/*>*/}
-        {/*  <Component />*/}
-        {/*</div>*/}
       </div>
     );
 }
