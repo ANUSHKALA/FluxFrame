@@ -1,7 +1,9 @@
 import React from "react";
 // import Component from './Component'
 import dummyCode from "./Component";
-import DynamicComponent from "./DynamicComponent";
+import DynamicLoader from "./DynamicLoader";
+
+
 
 const RenderScreen = () => {
     const [inspectMode, setInspectMode] = React.useState(false);
@@ -64,10 +66,11 @@ const RenderScreen = () => {
               </button>
           </div>
           <div className="container mx-auto flex items-center h-full cursor-pointer" onClick={handleInspect}>
-              <DynamicComponent code={dummyCode} />
+              <DynamicLoader code={dummyCode} className="mx-auto"/>
           </div>
       </div>
     );
 }
+
 
 export default RenderScreen;

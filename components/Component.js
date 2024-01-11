@@ -1,9 +1,5 @@
-import React from "react";
-
 const dummyCode = `
-
-import React from "react";
-
+// import React from "react";
 
 const Component = () => {
   const [num1, setNum1] = React.useState(0);
@@ -50,8 +46,6 @@ const Component = () => {
     </div>
   );
 }
-
-export default Component;
 
 `;
 
