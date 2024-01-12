@@ -1,9 +1,13 @@
 import Head from "next/head";
 import { useState } from "react";
 import PrevGenerationCard from "../components/PrevGenerationCard";
+import fluxFetch from "../utils/fetch";
+import { useRouter } from 'next/router'
 
 export default function Home() {
   const [code, setCode] = useState("");
+  const [prompt, setPrompt] = useState("");
+  const router = useRouter()
 
   console.log(code);
 
@@ -25,6 +29,27 @@ export default function Home() {
     },
   ];
 
+  const handleGenerate = async (e) => {
+    e.preventDefault()
+
+    if (prompt === "") {
+      return;
+    }
+    const endpoint = "/new_project"
+    
+    const body = {
+      "prompt_text": prompt,
+      "project_name": "test"
+    }
+    const header = {}
+
+    const data = await fluxFetch(endpoint, body, header)
+    console.log("This is the response : ",data)
+    const route = `/build/${data._id}`
+
+    router.push(route)
+  }
+
   return (
     <div>
       <Head>
@@ -36,33 +61,35 @@ export default function Home() {
       <main>
         <section
           key="1"
-          class="flex flex-col h-screen justify-center items-center bg-gray-100 dark:bg-gray-900"
+          className="flex flex-col h-screen justify-center items-center bg-gray-100 dark:bg-gray-900"
         >
-          <h1 class="text-5xl font-bold text-center text-gray-800 dark:text-gray-200 my-6">
+          <h1 className="text-5xl font-bold text-center text-gray-800 dark:text-gray-200 my-6">
             FluxFrame
           </h1>
-          <p class="text-lg text-center text-gray-600 dark:text-gray-400 mb-10 px-6">
+          <p className="text-lg text-center text-gray-600 dark:text-gray-400 mb-10 px-6">
             Enter your desired code generation prompts and let our AI do the
             work for you.
           </p>
-          <div class="w-full max-w-xl flex items-center my-10">
+          <div className="w-full max-w-xl flex items-center my-10">
             <input
-              class="flex-grow mr-3 my-3 border rounded-md p-4"
+              className="flex-grow mr-3 my-3 border rounded-md p-4"
               id="prompt"
               placeholder="Enter your code generation prompt here..."
+              onChange={(e) => setPrompt(e.target.value)}
             />
-            <button class="w-auto flex items-center bg-blue-500 text-white rounded-md px-5 py-4">
+            <button className="w-auto flex items-center bg-blue-500 text-white rounded-md px-5 py-4" onClick={handleGenerate}>
               Generate
             </button>
           </div>
-          <div class="w-full max-w-2xl mt-20 px-4">
-            <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-4">
+          <div className="w-full max-w-2xl mt-20 px-4">
+            <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-4">
               Previous Code Generations
             </h2>
-            <div class="space-y-4">
+            <div className="space-y-4">
               
               {sampleData.map((data) => (
                 <PrevGenerationCard
+                key={data.id}
                   prompt={data.prompt}
                   date={data.date}
                   id={data.id}

@@ -2,13 +2,17 @@ import React from "react";
 // import Component from './Component'
 import dummyCode from "./Component";
 import DynamicLoader from "./DynamicLoader";
+import Component from "./TestComponent";
 
-
-
-const RenderScreen = () => {
+const RenderScreen = ({code}) => {
     const [inspectMode, setInspectMode] = React.useState(false);
-    const [selectedComponent, setSelectedComponent] = React.useState(null);
-  
+    // const [selectedComponent, setSelectedComponent] = React.useState(null);
+    let selectedComponent = null;
+
+    const setSelectedComponent = (value) => {
+      selectedComponent = value;
+    }
+    const dynamicLoaderRef = React.useRef(null);
   
     const changeInspect = () => {
       setInspectMode(!inspectMode);
@@ -19,6 +23,7 @@ const RenderScreen = () => {
         e.stopPropagation();
         e.preventDefault();
         const element = e.target;
+
         if (selectedComponent && selectedComponent !== element) {
           clearSelectedComponent();
         }
@@ -26,6 +31,7 @@ const RenderScreen = () => {
           clearSelectedComponent();
         } else {
           const code = element.outerHTML;
+          console.log("Elemtny : ",element)
           element.style.border = "2px solid blue";
           element.style.position = "relative";
           element.style.zIndex = "10";
@@ -49,7 +55,7 @@ const RenderScreen = () => {
       }
       setSelectedComponent(null);
     };
-  // console.log(dummyCode)
+  
     
     return (
       <div className="bg-gray-900 w-full h-full flex flex-col">
@@ -58,7 +64,7 @@ const RenderScreen = () => {
                   className={"p-3 cursor-pointer hover:bg-slate-800 text-white" +
                   (inspectMode
                       ?" bg-slate-800 border-2 border-blue-500"
-                      : " bg-slate-500"
+                      : " bg-slate-500 border-2 border-transparent"
                   )}
                   onClick={changeInspect}
               >
@@ -66,7 +72,7 @@ const RenderScreen = () => {
               </button>
           </div>
           <div className="container mx-auto flex items-center h-full cursor-pointer" onClick={handleInspect}>
-              <DynamicLoader code={dummyCode} className="mx-auto"/>
+              <DynamicLoader code={dummyCode} className="mx-auto" handleInspect={handleInspect}/>
           </div>
       </div>
     );
