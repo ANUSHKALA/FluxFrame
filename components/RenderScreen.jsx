@@ -2,7 +2,6 @@ import React from "react";
 // import Component from './Component'
 import dummyCode from "./Component";
 import DynamicLoader from "./DynamicLoader";
-import Component from "./TestComponent";
 
 const RenderScreen = ({code}) => {
     const [inspectMode, setInspectMode] = React.useState(false);

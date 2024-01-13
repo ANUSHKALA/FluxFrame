@@ -7,6 +7,7 @@ import { useRouter } from 'next/router'
 export default function Home() {
   const [code, setCode] = useState("");
   const [prompt, setPrompt] = useState("");
+  const [loading, setLoading] = useState(false);
   const router = useRouter()
 
   console.log(code);
@@ -42,9 +43,10 @@ export default function Home() {
       "project_name": "test"
     }
     const header = {}
-
+    setLoading(true)
     const data = await fluxFetch(endpoint, body, header)
     console.log("This is the response : ",data)
+    setLoading(false)
     const route = `/build/${data._id}`
 
     router.push(route)
@@ -77,9 +79,11 @@ export default function Home() {
               placeholder="Enter your code generation prompt here..."
               onChange={(e) => setPrompt(e.target.value)}
             />
-            <button className="w-auto flex items-center bg-blue-500 text-white rounded-md px-5 py-4" onClick={handleGenerate}>
+            {!loading?<button className="w-auto flex items-center bg-blue-500 text-white rounded-md px-5 py-4" onClick={handleGenerate}>
               Generate
-            </button>
+            </button>:<div className="w-auto flex items-center bg-blue-400 text-slate-300 rounded-md px-5 py-4 animate-pulse">
+              Generating...
+              </div>}
           </div>
           <div className="w-full max-w-2xl mt-20 px-4">
             <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-4">

@@ -1,83 +1,120 @@
-import Head from 'next/head'
+import Head from "next/head";
 import PromptBox from "../../components/PromptBox";
 import RenderScreen from "../../components/RenderScreen";
 import CodeEditor from "../../components/CodeEditor";
-import {useState} from "react";
+import { useState } from "react";
+import fluxFetch from "../../utils/fetch"; 
 
+export default function Build({code, prompt, id}) {
+  const [currentTab, setCurrentTab] = useState("output");
 
-export default function Build() {
-    const [code, setCode] = useState("");
-    const [currentTab, setCurrentTab] = useState("output");
+  const handleCode = (newCode) => {
+    setCode(newCode);
+  };
 
-
-
-    const handleCode = (newCode) => {
-        setCode(newCode);
-    }
-
-    console.log(code)
+  console.log("id:", id);
+  console.log("code:", code);
   return (
-      <div className="continer h-screen px-24 flex justify-center mx-auto border border-blue-900">
-          <div className="border border-yellow-800 my-10 w-full">
-
-
+    <div className="continer h-screen px-24 flex justify-center mx-auto border border-blue-900">
+      <div className="border border-yellow-800 my-10 w-full">
+        <div className="text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700">
+          <div className="flex flex-wrap justify-end -mb-px">
+            <button
+              className="me-2"
+              onClick={() => {
+                setCurrentTab("output");
+              }}
+            >
               <div
-                  className="text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700">
-                  <div className="flex flex-wrap justify-end -mb-px">
-                      <button className="me-2" onClick={() => {setCurrentTab("output")}}>
-                          <div className={
-                              currentTab === "output"
-                                  ?"inline-block p-4 text-blue-600 border-b-2 border-blue-600 rounded-t-lg active dark:text-blue-500 dark:border-blue-500"
-                                  :"inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
-                          }>Output</div>
-                      </button>
-                      <button className="me-2" onClick={() => {setCurrentTab("code")}}>
-                          <div
-                              className={
-                                currentTab === "code"
-                                    ?"inline-block p-4 text-blue-600 border-b-2 border-blue-600 rounded-t-lg active dark:text-blue-500 dark:border-blue-500"
-                                    :"inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
-                                }
-                             aria-current="page">Code</div>
-                      </button>
-                  </div>
+                className={
+                  currentTab === "output"
+                    ? "inline-block p-4 text-blue-600 border-b-2 border-blue-600 rounded-t-lg active dark:text-blue-500 dark:border-blue-500"
+                    : "inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
+                }
+              >
+                Output
               </div>
-              {currentTab === "output"
-                  ?(
-                      <div className="h-full">
-                            <RenderScreen code={code} />
-                      </div>
-                  ):(
-                      <div className="h-full">
-                            <CodeEditor onChange={handleCode} code={code} />
-                      </div>
-                  )
-              }
-
+            </button>
+            <button
+              className="me-2"
+              onClick={() => {
+                setCurrentTab("code");
+              }}
+            >
+              <div
+                className={
+                  currentTab === "code"
+                    ? "inline-block p-4 text-blue-600 border-b-2 border-blue-600 rounded-t-lg active dark:text-blue-500 dark:border-blue-500"
+                    : "inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
+                }
+                aria-current="page"
+              >
+                Code
+              </div>
+            </button>
           </div>
+        </div>
+        {currentTab === "output" ? (
+          <div className="h-full">
+            <RenderScreen code={code} />
+          </div>
+        ) : (
+          <div className="h-full">
+            <CodeEditor onChange={handleCode} code={code} />
+          </div>
+        )}
       </div>
-      // <div>
-      //   <Head>
-      //     <title>Flux Frame</title>
-      //     <meta name="description" content="AI web developer" />
-      //     <link rel="icon" href="/favicon.ico" />
-      //   </Head>
-      //
-      //   <main>
-      //       <div>
-      //           <div className="grid grid-cols-6 h-screen">
-      //               <div className="col-span-4 h-screen">
-      //                   <RenderScreen />
-      //               </div>
-      //               <div className="col-span-2">
-      //                   <CodeEditor onChange={handleCode} code={code} />
-      //               </div>
-      //           </div>
-      //           <div className="absolute bottom-0 w-screen ">
-      //                 <PromptBox />
-      //           </div>
-      //       </div>
-      //   </main>
-      // </div>
-  )
+    </div>
+    // <div>
+    //   <Head>
+    //     <title>Flux Frame</title>
+    //     <meta name="description" content="AI web developer" />
+    //     <link rel="icon" href="/favicon.ico" />
+    //   </Head>
+    //
+    //   <main>
+    //       <div>
+    //           <div className="grid grid-cols-6 h-screen">
+    //               <div className="col-span-4 h-screen">
+    //                   <RenderScreen />
+    //               </div>
+    //               <div className="col-span-2">
+    //                   <CodeEditor onChange={handleCode} code={code} />
+    //               </div>
+    //           </div>
+    //           <div className="absolute bottom-0 w-screen ">
+    //                 <PromptBox />
+    //           </div>
+    //       </div>
+    //   </main>
+    // </div>
+  );
 }
+
+export async function getStaticProps(context) {
+    const { id } = context.params; 
+
+    const endpoint = `/get_project/${id}`
+    const body = {}
+    const header = {}   
+    console.log("Endpoint: ",endpoint)
+    const res = await fluxFetch(endpoint, body, header, "GET");
+    console.log("This is the response : ",res)
+    const data = res.prompts[0]
+  
+    return {
+      props: {
+        code: data.generation,
+        prompt: data.prompt_text,
+        id: id
+      }
+    };
+  }
+
+
+  export async function getStaticPaths() {
+    return {
+      paths: [],
+      fallback: true, // Render page on-demand if the id doesn't match a statically generated page
+    };
+  }

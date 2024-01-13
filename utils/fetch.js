@@ -1,4 +1,4 @@
-const fluxFetch = async (endpoint, body, header) => {
+const fluxFetch = async (endpoint, body, header, method="POST") => {
   let url = "http://127.0.0.1:8000";
   url = url + endpoint;
 
@@ -9,12 +9,16 @@ const fluxFetch = async (endpoint, body, header) => {
   };
   console.log("url: ", url);
   try {
-    const response = await fetch(url, {
-      method: "POST",
+    let options = {
+      method: method,
       headers: header,
-      body: JSON.stringify(body),
-    });
-
+    };
+    
+    if (method !== 'GET') {
+      options.body = JSON.stringify(body);
+    }
+    
+    const response = await fetch(url, options);
     const data = await response.json(); 
 
     console.log(data); 
