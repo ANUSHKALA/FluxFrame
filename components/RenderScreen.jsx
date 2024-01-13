@@ -1,12 +1,8 @@
 import React from "react";
-// import Component from './Component'
-import dummyCode from "./Component";
 import DynamicLoader from "./DynamicLoader";
 
 const RenderScreen = ({code}) => {
-  console.log("Got response:, ", code)
     const [inspectMode, setInspectMode] = React.useState(false);
-    // const [selectedComponent, setSelectedComponent] = React.useState(null);
     let selectedComponent = null;
 
     const setSelectedComponent = (value) => {
@@ -31,7 +27,6 @@ const RenderScreen = ({code}) => {
           clearSelectedComponent();
         } else {
           const code = element.outerHTML;
-          console.log("Elemtny : ",element)
           element.style.border = "2px solid blue";
           element.style.position = "relative";
           element.style.zIndex = "10";
@@ -58,7 +53,7 @@ const RenderScreen = ({code}) => {
   
     
     return (
-      <div className="bg-gray-900 w-full h-full flex flex-col">
+      <div className="bg-white w-full h-full flex flex-col">
           <div className="z-10 mx-2 my-2">
               <button
                   className={"p-3 cursor-pointer hover:bg-slate-800 text-white" +

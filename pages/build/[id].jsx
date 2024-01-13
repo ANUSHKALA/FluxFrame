@@ -1,29 +1,50 @@
 import Head from "next/head";
+import Link from "next/link";
 import PromptBox from "../../components/PromptBox";
 import RenderScreen from "../../components/RenderScreen";
 import CodeEditor from "../../components/CodeEditor";
 import { useState } from "react";
-import fluxFetch from "../../utils/fetch"; 
-import dummyCode from "../../components/Component";
+import fluxFetch from "../../utils/fetch";
 
-export default function Build({code, prompt, id}) {
-    const [genCode, setGenCode] = useState(code);
+export default function Build({ code, prompt, id }) {
+  const [genCode, setGenCode] = useState(code);
   const [currentTab, setCurrentTab] = useState("output");
+  const [instruction, setInstruction] = useState("");
 
   const handleCode = (newCode) => {
     setGenCode(newCode);
   };
 
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    const endpoint = `/update_project/${id}`;
+    const body = {
+      generation: genCode,
+      prompt_text: promptText,
+    };
+    const header = {};
+    const res = await fluxFetch(endpoint, body, header, "POST");
+    console.log(res);
+  };
+
   console.log("id:", id);
   console.log("code:", code);
   return (
-    <div className="continer h-screen px-24 flex justify-center mx-auto border border-blue-900">
+    <div className="continer h-screen px-24 justify-center bg-slate-900">
       <Head>
         <title>{prompt}</title>
         <meta name="description" content="AI web developer" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className="border border-yellow-800 my-10 w-full">
+      <Link className="text-4xl font-semibold text-gray-800 dark:text-gray-200 " href={"/"}>
+            <span className="py-14">FluxFrame</span>
+          </Link>
+      <div className="border border-yellow-800 py-12 h-4/5 w-full">
+        <div>
+          <h1 className="text-lg mx-3 font-bold text-gray-800 dark:text-gray-100 rounded bg-slate-500 w-fit px-3 py-3">
+            {prompt}
+          </h1>
+        </div>
         <div className="text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700">
           <div className="flex flex-wrap justify-end -mb-px">
             <button
@@ -39,7 +60,7 @@ export default function Build({code, prompt, id}) {
                     : "inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
                 }
               >
-                Output
+                Component
               </div>
             </button>
             <button
@@ -71,54 +92,35 @@ export default function Build({code, prompt, id}) {
           </div>
         )}
       </div>
+      <div className="border border-yellow-800 my-10 w-full">
+        <PromptBox value={instruction} onChange={setInstruction} />
+      </div>
     </div>
-    // <div>
-    //
-    //   <main>
-    //       <div>
-    //           <div className="grid grid-cols-6 h-screen">
-    //               <div className="col-span-4 h-screen">
-    //                   <RenderScreen />
-    //               </div>
-    //               <div className="col-span-2">
-    //                   <CodeEditor onChange={handleCode} code={code} />
-    //               </div>
-    //           </div>
-    //           <div className="absolute bottom-0 w-screen ">
-    //                 <PromptBox />
-    //           </div>
-    //       </div>
-    //   </main>
-    // </div>
   );
 }
 
 export async function getStaticProps(context) {
-    const { id } = context.params; 
+  const { id } = context.params;
 
-    const endpoint = `/get_project/${id}`
-    const body = {}
-    const header = {}   
-    console.log("Endpoint: ",endpoint)
-    const res = await fluxFetch(endpoint, body, header, "GET");
-    console.log("This is the response : ",res)
+  const endpoint = `/get_project/${id}`;
+  const body = {};
+  const header = {};
+  const res = await fluxFetch(endpoint, body, header, "GET");
 
+  const data = res.prompts[0];
 
-    const data = res.prompts[0]
-  
-    return {
-      props: {
-        code: data.generation,
-        prompt: data.prompt_text,
-        id: id
-      }
-    };
-  }
+  return {
+    props: {
+      code: data.generation,
+      prompt: data.prompt_text,
+      id: id,
+    },
+  };
+}
 
-
-  export async function getStaticPaths() {
-    return {
-      paths: [],
-      fallback: "blocking", // Render page on-demand if the id doesn't match a statically generated page
-    };
-  }
+export async function getStaticPaths() {
+  return {
+    paths: [],
+    fallback: "blocking", 
+  };
+}

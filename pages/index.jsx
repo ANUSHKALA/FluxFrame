@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PrevGenerationCard from "../components/PrevGenerationCard";
 import fluxFetch from "../utils/fetch";
 import { useRouter } from 'next/router'
@@ -9,6 +9,7 @@ export default function Home() {
   const [prompt, setPrompt] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter()
+  const [pastGenerations, setPastGenerations] = useState([])
 
   console.log(code);
 
@@ -30,6 +31,19 @@ export default function Home() {
     },
   ];
 
+  const fetchPastGenerations = async () => {
+    const endpoint = "/get_projects"
+    const body = {}
+    const header = {}
+    const data = await fluxFetch(endpoint, body, header, "GET")
+    console.log("the dayay",data)
+    setPastGenerations(data.projects)
+  }
+
+  useEffect(() => {
+    fetchPastGenerations()
+  }, [])
+
   const handleGenerate = async (e) => {
     e.preventDefault()
 
@@ -45,7 +59,6 @@ export default function Home() {
     const header = {}
     setLoading(true)
     const data = await fluxFetch(endpoint, body, header)
-    console.log("This is the response : ",data)
     setLoading(false)
     const route = `/build/${data._id}`
 
@@ -90,13 +103,13 @@ export default function Home() {
               Previous Code Generations
             </h2>
             <div className="space-y-4">
-              
-              {sampleData.map((data) => (
+              {pastGenerations.length === 0 && <div className="text-gray-600 dark:text-gray-400">No previous generations</div>}
+              {pastGenerations.map((data) => (
                 <PrevGenerationCard
-                key={data.id}
-                  prompt={data.prompt}
-                  date={data.date}
-                  id={data.id}
+                key={data._id}
+                  prompt={data.prompts[0].prompt_text}
+                  date={"12/1/2024"}
+                  id={data._id}
                 />
               ))}
             </div>
