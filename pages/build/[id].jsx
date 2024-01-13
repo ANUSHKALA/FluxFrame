@@ -4,18 +4,25 @@ import RenderScreen from "../../components/RenderScreen";
 import CodeEditor from "../../components/CodeEditor";
 import { useState } from "react";
 import fluxFetch from "../../utils/fetch"; 
+import dummyCode from "../../components/Component";
 
 export default function Build({code, prompt, id}) {
+    const [genCode, setGenCode] = useState(code);
   const [currentTab, setCurrentTab] = useState("output");
 
   const handleCode = (newCode) => {
-    setCode(newCode);
+    setGenCode(newCode);
   };
 
   console.log("id:", id);
   console.log("code:", code);
   return (
     <div className="continer h-screen px-24 flex justify-center mx-auto border border-blue-900">
+      <Head>
+        <title>{prompt}</title>
+        <meta name="description" content="AI web developer" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
       <div className="border border-yellow-800 my-10 w-full">
         <div className="text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700">
           <div className="flex flex-wrap justify-end -mb-px">
@@ -56,21 +63,16 @@ export default function Build({code, prompt, id}) {
         </div>
         {currentTab === "output" ? (
           <div className="h-full">
-            <RenderScreen code={code} />
+            <RenderScreen code={genCode} />
           </div>
         ) : (
           <div className="h-full">
-            <CodeEditor onChange={handleCode} code={code} />
+            <CodeEditor onChange={handleCode} code={genCode} />
           </div>
         )}
       </div>
     </div>
     // <div>
-    //   <Head>
-    //     <title>Flux Frame</title>
-    //     <meta name="description" content="AI web developer" />
-    //     <link rel="icon" href="/favicon.ico" />
-    //   </Head>
     //
     //   <main>
     //       <div>
@@ -100,6 +102,8 @@ export async function getStaticProps(context) {
     console.log("Endpoint: ",endpoint)
     const res = await fluxFetch(endpoint, body, header, "GET");
     console.log("This is the response : ",res)
+
+
     const data = res.prompts[0]
   
     return {
@@ -115,6 +119,6 @@ export async function getStaticProps(context) {
   export async function getStaticPaths() {
     return {
       paths: [],
-      fallback: true, // Render page on-demand if the id doesn't match a statically generated page
+      fallback: "blocking", // Render page on-demand if the id doesn't match a statically generated page
     };
   }

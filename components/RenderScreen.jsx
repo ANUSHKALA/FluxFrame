@@ -4,6 +4,7 @@ import dummyCode from "./Component";
 import DynamicLoader from "./DynamicLoader";
 
 const RenderScreen = ({code}) => {
+  console.log("Got response:, ", code)
     const [inspectMode, setInspectMode] = React.useState(false);
     // const [selectedComponent, setSelectedComponent] = React.useState(null);
     let selectedComponent = null;
@@ -71,7 +72,7 @@ const RenderScreen = ({code}) => {
               </button>
           </div>
           <div className="container mx-auto flex items-center h-full cursor-pointer" onClick={handleInspect}>
-              <DynamicLoader code={dummyCode} className="mx-auto" handleInspect={handleInspect}/>
+              <DynamicLoader code={code} className="mx-auto" handleInspect={handleInspect}/>
           </div>
       </div>
     );
