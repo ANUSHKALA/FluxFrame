@@ -15,13 +15,16 @@ export default function Build({ code, prompt, id }) {
     setGenCode(newCode);
   };
 
-  const onSubmit = async (e) => {
-    e.preventDefault();
-    const endpoint = `/update_project/${id}`;
+  const onSubmit = async (id, instruction) => {
+    // e.preventDefault();
+    const element = localStorage.getItem("code");
+    const endpoint = `/new_prompt`;
     const body = {
-      generation: genCode,
-      prompt_text: promptText,
+        project_id: id,
+        prompt_text: instruction,
+        element: `${element}`
     };
+    console.log("the body",body);
     const header = {};
     const res = await fluxFetch(endpoint, body, header, "POST");
     console.log(res);
@@ -84,7 +87,7 @@ export default function Build({ code, prompt, id }) {
         </div>
         {currentTab === "output" ? (
           <div className="h-full">
-            <RenderScreen code={genCode} />
+            <RenderScreen code={genCode}/>
           </div>
         ) : (
           <div className="h-full">
@@ -93,7 +96,7 @@ export default function Build({ code, prompt, id }) {
         )}
       </div>
       <div className="border border-yellow-800 my-10 w-full">
-        <PromptBox value={instruction} onChange={setInstruction} />
+        <PromptBox id={id} value={instruction} onChange={setInstruction} onSubmit={onSubmit}/>
       </div>
     </div>
   );
@@ -107,12 +110,13 @@ export async function getStaticProps(context) {
   const header = {};
   const res = await fluxFetch(endpoint, body, header, "GET");
 
-  const data = res.prompts[0];
+  const mainData = res.prompts[0];
+  const data = res.prompts[res.prompts.length-1];
 
   return {
     props: {
       code: data.generation,
-      prompt: data.prompt_text,
+      prompt: mainData.prompt_text,
       id: id,
     },
   };

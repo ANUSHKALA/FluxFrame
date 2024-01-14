@@ -1,18 +1,26 @@
-import React from "react";
+import React, { useEffect } from "react";
 import DynamicLoader from "./DynamicLoader";
 
 const RenderScreen = ({code}) => {
     const [inspectMode, setInspectMode] = React.useState(false);
-    let selectedComponent = null;
 
+    let selectedComponent = null;
     const setSelectedComponent = (value) => {
       selectedComponent = value;
     }
-    const dynamicLoaderRef = React.useRef(null);
-  
+
     const changeInspect = () => {
+      if (inspectMode) {
+        saveCode("");
+      }
       setInspectMode(!inspectMode);
     };
+
+    const saveCode = (code) => {
+      if(inspectMode){
+        localStorage.setItem("code", code);
+      }
+    }
   
     const handleInspect = (e) => {
       if (inspectMode) {
@@ -33,10 +41,12 @@ const RenderScreen = ({code}) => {
           element.style.background = "rgba(10,10,90,0.5)";
           element.style.boxShadow = "0 0 10px black";
           element.style.cursor = "pointer";
-          setSelectedComponent(element);
           console.log(code)
+          setSelectedComponent(element);
+          saveCode(code);
         }
       }
+
     };
   
     const clearSelectedComponent = () => {
@@ -66,7 +76,7 @@ const RenderScreen = ({code}) => {
                   Inspect Code
               </button>
           </div>
-          <div className="container mx-auto flex items-center h-full cursor-pointer" onClick={handleInspect}>
+          <div className="container mx-auto flex items-center h-full cursor-pointer overflow-scroll z-0" onClick={handleInspect}>
               <DynamicLoader code={code} className="mx-auto" handleInspect={handleInspect}/>
           </div>
       </div>

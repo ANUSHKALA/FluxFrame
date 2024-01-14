@@ -1,6 +1,6 @@
 import React from "react";
 
-const PromptBox = ({ value, onChange, onSubmit }) => {
+const PromptBox = ({id,  value, onChange, onSubmit }) => {
   return (
     <div className="bg-slate-800 text-white py-4">
       <div className="flex flex-row justify-start items-center w-full">
@@ -21,7 +21,7 @@ const PromptBox = ({ value, onChange, onSubmit }) => {
           <div className="pr-3 mx-10 my-auto w-72">
             <button
               className="bg-teal-500 hover:bg-teal-600 py-2 px-4 rounded text-white"
-              onClick={onSubmit}
+              onClick={()=>onSubmit(id, value)}
             >
               Generate
             </button>
