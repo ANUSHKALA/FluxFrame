@@ -28,6 +28,7 @@ export default function Build({ code, prompt, id }) {
     const header = {};
     const res = await fluxFetch(endpoint, body, header, "POST");
     console.log(res);
+    setGenCode(res.generation);
   };
 
   console.log("id:", id);

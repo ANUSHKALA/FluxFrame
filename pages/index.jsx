@@ -99,7 +99,7 @@ export default function Home() {
                   date={"12/1/2024"}
                   id={data._id}
                 />
-              ))}
+              )).reverse()}
             </div>
           </div>
         </div>
