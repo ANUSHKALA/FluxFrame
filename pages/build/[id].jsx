@@ -4,12 +4,14 @@ import PromptBox from "../../components/PromptBox";
 import RenderScreen from "../../components/RenderScreen";
 import CodeEditor from "../../components/CodeEditor";
 import { useState } from "react";
+import FileDownloadButton from "../../components/FileDownload";
 import fluxFetch from "../../utils/fetch";
 
 export default function Build({ code, prompt, id }) {
   const [genCode, setGenCode] = useState(code);
   const [currentTab, setCurrentTab] = useState("output");
   const [instruction, setInstruction] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleCode = (newCode) => {
     setGenCode(newCode);
@@ -18,16 +20,22 @@ export default function Build({ code, prompt, id }) {
   const onSubmit = async (id, instruction) => {
     // e.preventDefault();
     const element = localStorage.getItem("code");
+    console.log("the element", element);
+    if (instruction === "") {
+      return;
+    }
+    setLoading(true);
     const endpoint = `/new_prompt`;
     const body = {
-        project_id: id,
-        prompt_text: instruction,
-        element: `${element}`
+      project_id: id,
+      prompt_text: instruction,
+      element: `${element}`,
     };
-    console.log("the body",body);
+    console.log("the body", body);
     const header = {};
     const res = await fluxFetch(endpoint, body, header, "POST");
     console.log(res);
+    setLoading(false);
     setGenCode(res.generation);
   };
 
@@ -40,12 +48,15 @@ export default function Build({ code, prompt, id }) {
         <meta name="description" content="AI web developer" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Link className="text-4xl font-semibold text-gray-800 dark:text-gray-200 " href={"/"}>
-            <span className="py-14">FluxFrame</span>
-          </Link>
+      <Link
+        className="text-4xl font-semibold text-gray-800 dark:text-gray-200 "
+        href={"/"}
+      >
+        <span className="py-14">FluxFrame</span>
+      </Link>
       <div className="border border-yellow-800 py-12 h-4/5 w-full">
         <div>
-          <h1 className="text-lg mx-3 font-bold text-gray-800 dark:text-gray-100 rounded bg-slate-500 w-fit px-3 py-3">
+          <h1 className="text-lg mx-3 font-bold text-gray-800 dark:text-gray-100 rounded-tl-2xl rounded-tr-2xl rounded-br-2xl bg-slate-500 w-fit px-3 py-3">
             {prompt}
           </h1>
         </div>
@@ -84,11 +95,12 @@ export default function Build({ code, prompt, id }) {
                 Code
               </div>
             </button>
+            <FileDownloadButton code={genCode} />
           </div>
         </div>
         {currentTab === "output" ? (
           <div className="h-full">
-            <RenderScreen code={genCode}/>
+            <RenderScreen code={genCode} />
           </div>
         ) : (
           <div className="h-full">
@@ -97,7 +109,13 @@ export default function Build({ code, prompt, id }) {
         )}
       </div>
       <div className="border border-yellow-800 my-10 w-full">
-        <PromptBox id={id} value={instruction} onChange={setInstruction} onSubmit={onSubmit}/>
+        <PromptBox
+          id={id}
+          value={instruction}
+          onChange={setInstruction}
+          onSubmit={onSubmit}
+          loading={loading}
+        />
       </div>
     </div>
   );
@@ -112,7 +130,7 @@ export async function getStaticProps(context) {
   const res = await fluxFetch(endpoint, body, header, "GET");
 
   const mainData = res.prompts[0];
-  const data = res.prompts[res.prompts.length-1];
+  const data = res.prompts[res.prompts.length - 1];
 
   return {
     props: {
@@ -126,6 +144,6 @@ export async function getStaticProps(context) {
 export async function getStaticPaths() {
   return {
     paths: [],
-    fallback: "blocking", 
+    fallback: "blocking",
   };
 }

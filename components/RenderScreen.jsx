@@ -35,6 +35,7 @@ const RenderScreen = ({code}) => {
           clearSelectedComponent();
         } else {
           const code = element.outerHTML;
+          saveCode(code);
           element.style.border = "2px solid blue";
           element.style.position = "relative";
           element.style.zIndex = "10";
@@ -43,7 +44,6 @@ const RenderScreen = ({code}) => {
           element.style.cursor = "pointer";
           console.log(code)
           setSelectedComponent(element);
-          saveCode(code);
         }
       }
 
@@ -59,17 +59,18 @@ const RenderScreen = ({code}) => {
         selectedComponent.style.cursor = null;
       }
       setSelectedComponent(null);
+      saveCode("");
     };
   
     
     return (
       <div className="bg-white w-full h-full flex flex-col">
-          <div className="z-10 mx-2 my-2">
+          <div className="z-10 mx-2 my-2 w-fit">
               <button
-                  className={"p-3 cursor-pointer hover:bg-slate-800 text-white" +
+                  className={"p-3 cursor-pointer hover:bg-slate-700 text-white" +
                   (inspectMode
-                      ?" bg-slate-800 border-2 border-blue-500"
-                      : " bg-slate-500 border-2 border-transparent"
+                      ?" bg-slate-800 border-2 border-blue-500 rounded text-white"
+                      : " bg-slate-500 border-2 border-transparent rounded text-gray-100"
                   )}
                   onClick={changeInspect}
               >
